@@ -3,6 +3,72 @@ import { OAuth2Client } from 'google-auth-library';
 
 export const authRoutes = Router();
 
+/**
+ * @openapi
+ * /api/auth/url:
+ *   get:
+ *     tags: [Auth]
+ *     summary: Gera URL de autorização OAuth2
+ *     description: Retorna a URL para o usuário autorizar o acesso ao Google Ads via OAuth2.
+ *     responses:
+ *       200:
+ *         description: URL de autorização gerada com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     url:
+ *                       type: string
+ *                       example: "https://accounts.google.com/o/oauth2/auth?..."
+ */
+
+/**
+ * @openapi
+ * /api/auth/callback:
+ *   get:
+ *     tags: [Auth]
+ *     summary: Callback OAuth2 — troca code por refresh_token
+ *     description: Recebe o `code` retornado pelo Google e o troca por um `refresh_token`.
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Código de autorização retornado pelo Google.
+ *     responses:
+ *       200:
+ *         description: Autenticação concluída com sucesso.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     refresh_token:
+ *                       type: string
+ *       400:
+ *         description: Parâmetro `code` ausente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Falha ao obter token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 const oauth2Client = new OAuth2Client(
   process.env.GOOGLE_ADS_CLIENT_ID,
   process.env.GOOGLE_ADS_CLIENT_SECRET,
